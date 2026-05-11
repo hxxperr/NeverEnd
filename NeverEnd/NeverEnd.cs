@@ -1,42 +1,64 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using Engine;
 
 namespace NeverEnd
 {
     public partial class NeverEnd : Form
     {
+        private const string PlayerDataFileName = "PlayerData.xml";
+        private const int PotionPrice = 8;
+
         private Player _player;
         private Monster _currentMonster;
-        private const string PLAYER_DATA_FILE_NAME = "PlayerData.xml";
+        private bool _gameCompleted;
 
         public NeverEnd()
         {
             InitializeComponent();
+            ConfigureTables();
+            LoadPlayer();
+            MoveTo(_player.CurrentLocation);
+            AppendMessage("Добро пожаловать в Never End. Следы во дворе ведут на север.");
+        }
 
-            if (File.Exists(PLAYER_DATA_FILE_NAME))
+        private void LoadPlayer()
+        {
+            if (File.Exists(PlayerDataFileName))
             {
-                _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PLAYER_DATA_FILE_NAME));
+                _player = Player.CreatePlayerFromXmlString(File.ReadAllText(PlayerDataFileName));
             }
             else
             {
                 _player = Player.CreateDefaultPlayer();
             }
 
-
-            MoveTo(_player.CurrentLocation);
-
-            UpdatePlayerStats();
+            _gameCompleted = _player.CompletedThisQuest(World.QuestByID(World.QUEST_ID_FIND_WIFE));
         }
 
+        private void SavePlayer()
+        {
+            File.WriteAllText(PlayerDataFileName, _player.ToXmlString());
+        }
+
+        private void ConfigureTables()
+        {
+            dgvInventory.ColumnCount = 2;
+            dgvInventory.Columns[0].Name = "Предмет";
+            dgvInventory.Columns[0].Width = 220;
+            dgvInventory.Columns[1].Name = "Кол-во";
+            dgvInventory.Columns[1].Width = 80;
+
+            dgvQuests.ColumnCount = 2;
+            dgvQuests.Columns[0].Name = "Квест";
+            dgvQuests.Columns[0].Width = 220;
+            dgvQuests.Columns[1].Name = "Статус";
+            dgvQuests.Columns[1].Width = 80;
+        }
 
         private void btnNorth_Click(object sender, EventArgs e)
         {
@@ -60,397 +82,448 @@ namespace NeverEnd
 
         private void btnUseWeapon_Click(object sender, EventArgs e)
         {
-            Weapon currentWeapon = (Weapon)cboWeapons.SelectedItem;
+            if (_currentMonster == null)
+            {
+                AppendMessage("Здесь не с кем сражаться.");
+                return;
+            }
+
+            if (cboWeapons.SelectedItem is not Weapon currentWeapon)
+            {
+                AppendMessage("Выберите оружие перед атакой.");
+                return;
+            }
+
             int damageToMonster = RandomNumberGenerator.NumberBetween(currentWeapon.MinimumDamage, currentWeapon.MaximumDamage);
-
             _currentMonster.CurrentHitPoints -= damageToMonster;
-
-            rtbMessages.Text += "Вы нанесли " + damageToMonster.ToString() + " урона " + _currentMonster.Name + Environment.NewLine;
+            AppendMessage("Вы нанесли " + damageToMonster + " урона: " + _currentMonster.Name + ".");
 
             if (_currentMonster.CurrentHitPoints <= 0)
             {
-                rtbMessages.Text += Environment.NewLine;
-                rtbMessages.Text += "Вы победили " + _currentMonster.Name + Environment.NewLine;
-
-                _player.ExperiencePoints += _currentMonster.RewardExperiencePoints;
-                rtbMessages.Text += "Вы получили " + _currentMonster.RewardExperiencePoints.ToString() + " EXP." + Environment.NewLine;
-
-                _player.Gold += _currentMonster.RewardGold;
-                rtbMessages.Text += "Вы получили " + _currentMonster.RewardGold.ToString() + " золота." + Environment.NewLine;
-
-                List<InventoryItem> lootedItems = new List<InventoryItem>();
-
-                foreach (LootItem lootItem in _currentMonster.LootTable)
-                {
-                    if (RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage)
-                    {
-                        lootedItems.Add(new InventoryItem(lootItem.Details, 1));
-                    }
-                }
-
-                // Если никакие предметы не были выбраны случайным образом, добавляем предметы лута по умолчанию.
-                if (lootedItems.Count == 0)
-                {
-                    foreach (LootItem lootItem in _currentMonster.LootTable)
-                    {
-                        if (lootItem.IsDefaultItem)
-                        {
-                            lootedItems.Add(new InventoryItem(lootItem.Details, 1));
-                        }
-                    }
-                }
-
-                // Добавление лута в инвнт
-                foreach (InventoryItem inventoryItem in lootedItems)
-                {
-                    _player.AddItemToInventory(inventoryItem.Details);
-
-                    if (inventoryItem.Quantity == 1)
-                    {
-                        rtbMessages.Text += "Вы получили " + inventoryItem.Quantity.ToString() + " " + inventoryItem.Details.Name + Environment.NewLine + ".";
-                    }
-                    else
-                    {
-                        rtbMessages.Text += "Вы получили " + inventoryItem.Quantity.ToString() + " " + inventoryItem.Details.NamePlural + Environment.NewLine + ".";
-                    }
-                }
-
-                lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-                lblGold.Text = _player.Gold.ToString();
-                lblExperience.Text = _player.ExperiencePoints.ToString();
-                lblLevel.Text = _player.Level.ToString();
-
-                UpdatePlayerStats();
-                UpdateInventoryListInUI();
-                UpdateWeaponListInUI();
-                UpdatePotionListInUI();
-
-                rtbMessages.Text += Environment.NewLine;
-                MoveTo(_player.CurrentLocation);
-            }
-            else
-            {
-                int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
-
-                rtbMessages.Text += _currentMonster.Name + " нанесла вам " + damageToPlayer.ToString() + " урона." + Environment.NewLine;
-
-                _player.CurrentHitPoints -= damageToPlayer;
-
-                lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-
-                if (_player.CurrentHitPoints <= 0)
-                {
-                    MessageBox.Show("Вас убили... Постарайтесь в следующие раз получше)");
-                    rtbMessages.Text += _currentMonster.Name + " убил вас." + Environment.NewLine;
-
-                    // Отправляет игрока домой
-                    MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
-                }
+                DefeatMonster();
+                return;
             }
 
-            UpdatePlayerStats();
+            MonsterAttacksPlayer();
+            RefreshGameState();
+            SavePlayer();
         }
 
         private void btnUsePotion_Click(object sender, EventArgs e)
         {
-            // Выбираем определенное зелья из КомбоБокса
-            HealingPotion potion = (HealingPotion)cboPotions.SelectedItem;
-
-            // Добавляет ХП игроку
-            _player.CurrentHitPoints = (_player.CurrentHitPoints + potion.AmountToHeal);
-
-            // ХП не может быть выше максимального ХП
-            if (_player.CurrentHitPoints > _player.MaximumHitPoints)
+            if (cboPotions.SelectedItem is not HealingPotion potion)
             {
-                _player.CurrentHitPoints = _player.MaximumHitPoints;
+                AppendMessage("У вас нет зелья для использования.");
+                return;
             }
 
-            // Убрать зелье
-            foreach (InventoryItem ii in _player.Inventory)
+            _player.CurrentHitPoints = Math.Min(_player.MaximumHitPoints, _player.CurrentHitPoints + potion.AmountToHeal);
+            _player.RemoveItemFromInventory(potion);
+            AppendMessage("Вы выпили " + potion.Name + " и восстановили " + potion.AmountToHeal + " здоровья.");
+
+            if (_currentMonster != null)
             {
-                if (ii.Details.ID == potion.ID)
+                MonsterAttacksPlayer();
+            }
+
+            RefreshGameState();
+            SavePlayer();
+        }
+
+        private void btnBuyPotion_Click(object sender, EventArgs e)
+        {
+            if (_player.CurrentLocation.ID != World.LOCATION_ID_SHOP)
+            {
+                return;
+            }
+
+            if (_player.Gold < PotionPrice)
+            {
+                AppendMessage("Торговец качает головой: нужно " + PotionPrice + " золота за зелье.");
+                return;
+            }
+
+            _player.Gold -= PotionPrice;
+            _player.AddItemToInventory(World.ItemByID(World.ITEM_ID_HEALING_POTION));
+            AppendMessage("Вы купили лечебное зелье.");
+            RefreshGameState();
+            SavePlayer();
+        }
+
+        private void btnSaveGame_Click(object sender, EventArgs e)
+        {
+            SavePlayer();
+            AppendMessage("Игра сохранена.");
+        }
+
+        private void btnNewGame_Click(object sender, EventArgs e)
+        {
+            DialogResult result = MessageBox.Show(
+                "Начать новую игру? Текущее сохранение будет перезаписано.",
+                "Новая игра",
+                MessageBoxButtons.YesNo,
+                MessageBoxIcon.Question);
+
+            if (result != DialogResult.Yes)
+            {
+                return;
+            }
+
+            _player = Player.CreateDefaultPlayer();
+            _currentMonster = null;
+            _gameCompleted = false;
+            rtbMessages.Clear();
+            MoveTo(_player.CurrentLocation);
+            AppendMessage("Новая игра началась. Во дворе ждут следы.");
+            SavePlayer();
+        }
+
+        private void MoveTo(Location newLocation)
+        {
+            if (newLocation == null)
+            {
+                return;
+            }
+
+            if (!_player.HasRequiredItemToEnterThisLocation(newLocation))
+            {
+                AppendMessage("Нужен предмет: " + newLocation.ItemRequiredToEnter.Name + ".");
+                return;
+            }
+
+            _player.CurrentLocation = newLocation;
+
+            if (newLocation.RestoresHitPoints)
+            {
+                _player.CurrentHitPoints = _player.MaximumHitPoints;
+                AppendMessage("Дома спокойно. Здоровье восстановлено.");
+            }
+
+            UpdateLocationImage(newLocation.ImageName);
+            UpdateNavigationButtons(newLocation);
+            UpdateLocationText(newLocation);
+            HandleQuestAtLocation(newLocation);
+            SpawnMonsterAtLocation(newLocation);
+            RefreshGameState();
+            SavePlayer();
+        }
+
+        private void HandleQuestAtLocation(Location location)
+        {
+            Quest quest = location.QuestAvailableHere;
+
+            if (quest == null)
+            {
+                return;
+            }
+
+            bool playerAlreadyHasQuest = _player.HasThisQuest(quest);
+            bool playerAlreadyCompletedQuest = _player.CompletedThisQuest(quest);
+
+            if (!playerAlreadyHasQuest)
+            {
+                _player.Quests.Add(new PlayerQuest(quest));
+                AppendMessage("Новый квест: " + quest.Name + ".");
+                AppendMessage(quest.Description);
+                AppendQuestRequirements(quest);
+                return;
+            }
+
+            if (playerAlreadyCompletedQuest)
+            {
+                return;
+            }
+
+            if (!_player.HasAllQuestCompletionItems(quest))
+            {
+                AppendMessage("Квест активен: " + quest.Name + ".");
+                AppendQuestProgress(quest);
+                return;
+            }
+
+            CompleteQuest(quest);
+        }
+
+        private void CompleteQuest(Quest quest)
+        {
+            _player.RemoveQuestCompletionItems(quest);
+            _player.ExperiencePoints += quest.RewardExperiencePoints;
+            _player.Gold += quest.RewardGold;
+
+            if (quest.RewardItem != null)
+            {
+                _player.AddItemToInventory(quest.RewardItem);
+            }
+
+            _player.MarkQuestCompleted(quest);
+            AppendMessage("Квест выполнен: " + quest.Name + ".");
+            AppendMessage("Награда: " + quest.RewardExperiencePoints + " опыта, " + quest.RewardGold + " золота" +
+                (quest.RewardItem == null ? "." : ", " + quest.RewardItem.Name + "."));
+
+            if (quest.ID == World.QUEST_ID_FIND_WIFE)
+            {
+                CompleteGame();
+            }
+        }
+
+        private void CompleteGame()
+        {
+            _gameCompleted = true;
+            _currentMonster = null;
+            AppendMessage("");
+            AppendMessage("Финал: вы нашли след Анны и вернулись домой с ее кольцом.");
+            AppendMessage("История Never End завершена. Можно начать новую игру или продолжить гулять по миру.");
+            MessageBox.Show("Вы прошли Never End!", "Победа", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void SpawnMonsterAtLocation(Location location)
+        {
+            if (_gameCompleted || location.MonsterLivingHere == null)
+            {
+                _currentMonster = null;
+                return;
+            }
+
+            Monster standardMonster = World.MonsterByID(location.MonsterLivingHere.ID);
+            _currentMonster = new Monster(
+                standardMonster.ID,
+                standardMonster.Name,
+                standardMonster.MaximumDamage,
+                standardMonster.RewardExperiencePoints,
+                standardMonster.RewardGold,
+                standardMonster.CurrentHitPoints,
+                standardMonster.MaximumHitPoints);
+
+            foreach (LootItem lootItem in standardMonster.LootTable)
+            {
+                _currentMonster.LootTable.Add(lootItem);
+            }
+
+            AppendMessage("Вы видите врага: " + _currentMonster.Name + ".");
+        }
+
+        private void DefeatMonster()
+        {
+            AppendMessage("Вы победили: " + _currentMonster.Name + ".");
+            _player.ExperiencePoints += _currentMonster.RewardExperiencePoints;
+            _player.Gold += _currentMonster.RewardGold;
+            AppendMessage("Получено: " + _currentMonster.RewardExperiencePoints + " опыта и " + _currentMonster.RewardGold + " золота.");
+
+            foreach (InventoryItem item in RollLoot(_currentMonster))
+            {
+                _player.AddItemToInventory(item.Details);
+                AppendMessage("Добыча: " + item.Details.Name + ".");
+            }
+
+            _currentMonster = null;
+            RefreshGameState();
+            SavePlayer();
+        }
+
+        private static List<InventoryItem> RollLoot(Monster monster)
+        {
+            List<InventoryItem> lootedItems = new List<InventoryItem>();
+
+            foreach (LootItem lootItem in monster.LootTable)
+            {
+                if (RandomNumberGenerator.NumberBetween(1, 100) <= lootItem.DropPercentage)
                 {
-                    ii.Quantity--;
-                    break;
+                    lootedItems.Add(new InventoryItem(lootItem.Details, 1));
                 }
             }
 
-            rtbMessages.Text += "You drink a " + potion.Name + Environment.NewLine;
-
-            // Ход монстра атаковать
-
-            // Расчитываем урон нанесенный игроку
-            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
-
-            rtbMessages.Text += _currentMonster.Name + " нанесла вам " + damageToPlayer.ToString() + " урона." + Environment.NewLine;
-
-            _player.CurrentHitPoints -= damageToPlayer;
-
-            if (_player.CurrentHitPoints <= 0)
+            if (lootedItems.Count == 0)
             {
-                rtbMessages.Text += _currentMonster.Name + " убил вас." + Environment.NewLine;
-                MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+                foreach (LootItem lootItem in monster.LootTable.Where(item => item.IsDefaultItem))
+                {
+                    lootedItems.Add(new InventoryItem(lootItem.Details, 1));
+                }
             }
 
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-            UpdateInventoryListInUI();
-            UpdatePotionListInUI();
+            return lootedItems;
         }
+
+        private void MonsterAttacksPlayer()
+        {
+            int damageToPlayer = RandomNumberGenerator.NumberBetween(0, _currentMonster.MaximumDamage);
+            _player.CurrentHitPoints -= damageToPlayer;
+            AppendMessage(_currentMonster.Name + " наносит вам " + damageToPlayer + " урона.");
+
+            if (_player.CurrentHitPoints > 0)
+            {
+                return;
+            }
+
+            AppendMessage("Вы потеряли сознание и очнулись дома.");
+            _currentMonster = null;
+            _player.CurrentHitPoints = 1;
+            MoveTo(World.LocationByID(World.LOCATION_ID_HOME));
+        }
+
+        private void RefreshGameState()
+        {
+            UpdatePlayerStats();
+            UpdateInventoryListInUI();
+            UpdateQuestListInUI();
+            UpdateWeaponListInUI();
+            UpdatePotionListInUI();
+            UpdateCombatControls();
+            UpdateGoalText();
+        }
+
         private void UpdatePlayerStats()
         {
-            // Обновляем информацию об игроке и элементы управления инвентарем
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
+            lblHitPoints.Text = _player.CurrentHitPoints + " / " + _player.MaximumHitPoints;
             lblGold.Text = _player.Gold.ToString();
             lblExperience.Text = _player.ExperiencePoints.ToString();
             lblLevel.Text = _player.Level.ToString();
         }
-        private void MoveTo(Location newLocation)
-        {
-            //Имеет ли данная локацию требуемый предмет
-            if (!_player.HasRequiredItemToEnterThisLocation(newLocation))
-            {
-                rtbMessages.Text += "Вы должны иметь " + newLocation.ItemRequiredToEnter.Name + ", чтобы войти на эту локацию." + Environment.NewLine;
-                return;
-            }
 
-            // Обновляет текующую локацию игрока
-            _player.CurrentLocation = newLocation;
-
-            // Показывает/прячет кнопки перемещения
-            btnNorth.Visible = newLocation.LocationToNorth != null;
-            btnEast.Visible = newLocation.LocationToEast != null;
-            btnSouth.Visible = newLocation.LocationToSouth != null;
-            btnWest.Visible = newLocation.LocationToWest != null;
-
-            // Показывает текущую локацию и описание к локации
-            rtbLocation.Text = newLocation.Name + Environment.NewLine;
-            rtbLocation.Text += newLocation.Description + Environment.NewLine;
-
-            // Полностью излечивает игрока
-            _player.CurrentHitPoints = _player.MaximumHitPoints;
-
-            // Обновляет HP в UI
-            lblHitPoints.Text = _player.CurrentHitPoints.ToString();
-
-            // Есть ли в этой локации квест
-            if (newLocation.QuestAvailableHere != null)
-            {
-                // Смотрим есть ли у игрока этот квест и выполнен ли он
-                bool playerAlreadyHasQuest = _player.HasThisQuest(newLocation.QuestAvailableHere);
-                bool playerAlreadyCompletedQuest = _player.CompletedThisQuest(newLocation.QuestAvailableHere);
-
-                // Смотрим есть ли квест у игрока
-                if (playerAlreadyHasQuest)
-                {
-                    // Если игрок не выполнил ещё квест
-                    if (!playerAlreadyCompletedQuest)
-                    {
-                        // Смотрит, есть ли у игрока вещи для завершения квеста
-                        bool playerHasAllItemsToCompleteQuest = _player.HasAllQuestCompletionItems(newLocation.QuestAvailableHere);
-
-                        // У игрока есть все вещи для завершения квеста
-                        if (playerHasAllItemsToCompleteQuest)
-                        {
-                            // Показывает сообщение
-                            rtbMessages.Text += Environment.NewLine;
-                            rtbMessages.Text += "Вы получили новый квест: '" + newLocation.QuestAvailableHere.Name + "'." + Environment.NewLine;
-
-                            // Убирает квестовые вещи из инвенторя
-                            _player.RemoveQuestCompletionItems(newLocation.QuestAvailableHere);
-
-
-                            // Нагрда за квест
-                            rtbMessages.Text += "Вы получите: " + Environment.NewLine;
-                            rtbMessages.Text += newLocation.QuestAvailableHere.RewardExperiencePoints.ToString() + " опыта" + Environment.NewLine;
-                            rtbMessages.Text += newLocation.QuestAvailableHere.RewardGold.ToString() + " золота" + Environment.NewLine;
-                            rtbMessages.Text += newLocation.QuestAvailableHere.RewardItem.Name + Environment.NewLine;
-                            rtbMessages.Text += Environment.NewLine;
-
-                            _player.ExperiencePoints += newLocation.QuestAvailableHere.RewardExperiencePoints;
-                            _player.Gold += newLocation.QuestAvailableHere.RewardGold;
-
-                            // Добавляет награду за выполнение квеста
-                            _player.AddItemToInventory(newLocation.QuestAvailableHere.RewardItem);
-
-                            // Отмечает квест выполненым
-                            _player.MarkQuestCompleted(newLocation.QuestAvailableHere);
-                        }
-                    }
-                }
-                else
-                {
-                    // Если у игрока нет этого квеста, то выводится сообщение
-                    rtbMessages.Text += "Вы получили новый квест: " + newLocation.QuestAvailableHere.Name + "." + Environment.NewLine;
-                    rtbMessages.Text += newLocation.QuestAvailableHere.Description + Environment.NewLine;
-                    rtbMessages.Text += "Чтобы выполнить его, вернитесь с: " + Environment.NewLine;
-                    foreach (QuestCompletionItem qci in newLocation.QuestAvailableHere.QuestCompletionItems)
-                    {
-                        if (qci.Quantity == 1)
-                        {
-                            rtbMessages.Text += qci.Quantity.ToString() + " " + qci.Details.Name + Environment.NewLine;
-                        }
-                        else
-                        {
-                            rtbMessages.Text += qci.Quantity.ToString() + " " + qci.Details.NamePlural + Environment.NewLine;
-                        }
-                    }
-                    rtbMessages.Text += Environment.NewLine;
-
-                    // Добавляет квест в список квестов игрока
-                    _player.Quests.Add(new PlayerQuest(newLocation.QuestAvailableHere));
-                }
-            }
-
-            // Есть ли в этой локации монстор?
-            if (newLocation.MonsterLivingHere != null)
-            {
-                rtbMessages.Text += "Вы видите " + newLocation.MonsterLivingHere.Name + Environment.NewLine + ".";
-
-                // Создает нового монстра, используя значения из стандартного World.Monster списка
-                Monster standardMonster = World.MonsterByID(newLocation.MonsterLivingHere.ID);
-
-                _currentMonster = new Monster(standardMonster.ID, standardMonster.Name, standardMonster.MaximumDamage,
-                    standardMonster.RewardExperiencePoints, standardMonster.RewardGold, standardMonster.CurrentHitPoints, standardMonster.MaximumHitPoints);
-
-                foreach (LootItem lootItem in standardMonster.LootTable)
-                {
-                    _currentMonster.LootTable.Add(lootItem);
-                }
-
-                cboWeapons.Visible = true;
-                cboPotions.Visible = true;
-                btnUseWeapon.Visible = true;
-                btnUsePotion.Visible = true;
-            }
-            else
-            {
-                _currentMonster = null;
-
-                cboWeapons.Visible = false;
-                cboPotions.Visible = false;
-                btnUseWeapon.Visible = false;
-                btnUsePotion.Visible = false;
-            }
-
-            // Обновляет инвентарь игрока
-            UpdateInventoryListInUI();
-
-            // Обновляет квесты игрока
-            UpdateQuestListInUI();
-
-            // Обновляет оружие в КомбоБокс оружие
-            UpdateWeaponListInUI();
-
-            // Обновляет зелья в КомбоБокс зелья
-            UpdatePotionListInUI();
-
-            UpdatePlayerStats();
-        }
         private void UpdateInventoryListInUI()
         {
-            dgvInventory.RowHeadersVisible = false;
-
-            dgvInventory.ColumnCount = 2;
-            dgvInventory.Columns[0].Name = "Название";
-            dgvInventory.Columns[0].Width = 140;
-            dgvInventory.Columns[1].Name = "Количество";
-            dgvInventory.Columns[1].Width = 90;
-
             dgvInventory.Rows.Clear();
 
-            foreach (InventoryItem inventoryItem in _player.Inventory)
+            foreach (InventoryItem inventoryItem in _player.Inventory.Where(item => item.Quantity > 0))
             {
-                if (inventoryItem.Quantity > 0)
-                {
-                    dgvInventory.Rows.Add(new[] { inventoryItem.Details.Name, inventoryItem.Quantity.ToString() });
-                }
+                dgvInventory.Rows.Add(inventoryItem.Details.Name, inventoryItem.Quantity.ToString());
             }
         }
+
         private void UpdateQuestListInUI()
         {
-            dgvQuests.RowHeadersVisible = false;
-
-            dgvQuests.ColumnCount = 2;
-            dgvQuests.Columns[0].Name = "Название";
-            dgvQuests.Columns[0].Width = 140;
-            dgvQuests.Columns[1].Name = "Выполнено?";
-            dgvQuests.Columns[1].Width = 90;
-
             dgvQuests.Rows.Clear();
 
             foreach (PlayerQuest playerQuest in _player.Quests)
             {
-                dgvQuests.Rows.Add(new[] { playerQuest.Details.Name, playerQuest.IsCompleted.ToString() });
+                dgvQuests.Rows.Add(playerQuest.Details.Name, playerQuest.IsCompleted ? "Готово" : "В работе");
             }
         }
+
         private void UpdateWeaponListInUI()
         {
-            List<Weapon> weapons = new List<Weapon>();
+            List<Weapon> weapons = _player.Inventory
+                .Where(item => item.Quantity > 0)
+                .Select(item => item.Details)
+                .OfType<Weapon>()
+                .ToList();
 
-            foreach (InventoryItem inventoryItem in _player.Inventory)
+            cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged;
+            cboWeapons.DataSource = weapons;
+            cboWeapons.DisplayMember = "Name";
+            cboWeapons.ValueMember = "ID";
+
+            if (weapons.Count > 0)
             {
-                if (inventoryItem.Details is Weapon)
-                {
-                    if (inventoryItem.Quantity > 0)
-                    {
-                        weapons.Add((Weapon)inventoryItem.Details);
-                    }
-                }
+                cboWeapons.SelectedItem = _player.CurrentWeapon != null && weapons.Any(weapon => weapon.ID == _player.CurrentWeapon.ID)
+                    ? weapons.First(weapon => weapon.ID == _player.CurrentWeapon.ID)
+                    : weapons[0];
+                _player.CurrentWeapon = (Weapon)cboWeapons.SelectedItem;
             }
 
-            if (weapons.Count == 0)
-            {
-                // The player doesn't have any weapons, so hide the weapon combobox and "Use" button
-                cboWeapons.Visible = false;
-                btnUseWeapon.Visible = false;
-            }
-            else
-            {
-                cboWeapons.SelectedIndexChanged -= cboWeapons_SelectedIndexChanged;
-                cboWeapons.DataSource = weapons;
-                cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
-                cboWeapons.DisplayMember = "Name";
-                cboWeapons.ValueMember = "ID";
-
-                if (_player.CurrentWeapon != null)
-                {
-                    cboWeapons.SelectedItem = _player.CurrentWeapon;
-                }
-                else
-                {
-                    cboWeapons.SelectedIndex = 0;
-                }
-            }
+            cboWeapons.SelectedIndexChanged += cboWeapons_SelectedIndexChanged;
         }
+
         private void UpdatePotionListInUI()
         {
-            List<HealingPotion> healingPotions = new List<HealingPotion>();
+            List<HealingPotion> healingPotions = _player.Inventory
+                .Where(item => item.Quantity > 0)
+                .Select(item => item.Details)
+                .OfType<HealingPotion>()
+                .ToList();
 
-            foreach (InventoryItem inventoryItem in _player.Inventory)
+            cboPotions.DataSource = healingPotions;
+            cboPotions.DisplayMember = "Name";
+            cboPotions.ValueMember = "ID";
+        }
+
+        private void UpdateCombatControls()
+        {
+            bool hasMonster = _currentMonster != null;
+            bool hasWeapon = cboWeapons.Items.Count > 0;
+            bool hasPotion = cboPotions.Items.Count > 0;
+
+            lblMonster.Text = hasMonster
+                ? "Враг: " + _currentMonster.Name + " (" + _currentMonster.CurrentHitPoints + "/" + _currentMonster.MaximumHitPoints + " HP)"
+                : "Врагов рядом нет.";
+
+            cboWeapons.Enabled = hasMonster && hasWeapon;
+            btnUseWeapon.Enabled = hasMonster && hasWeapon;
+            cboPotions.Enabled = hasPotion;
+            btnUsePotion.Enabled = hasPotion;
+            btnBuyPotion.Visible = _player.CurrentLocation.ID == World.LOCATION_ID_SHOP;
+        }
+
+        private void UpdateGoalText()
+        {
+            if (_gameCompleted)
             {
-                if (inventoryItem.Details is HealingPotion)
-                {
-                    if (inventoryItem.Quantity > 0)
-                    {
-                        healingPotions.Add((HealingPotion)inventoryItem.Details);
-                    }
-                }
+                lblGoal.Text = "Цель выполнена: Анна найдена. Можно начать новую игру.";
+                return;
             }
 
-            if (healingPotions.Count == 0)
+            if (_player.HasItem(World.ItemByID(World.ITEM_ID_GOLD_RING)))
             {
-                // У игрока нет зельев, прячем КомбоБокс зелия и кнопку использовать зелье
-                cboPotions.Visible = false;
-                btnUsePotion.Visible = false;
+                lblGoal.Text = "Цель: вернитесь во двор с кольцом Анны.";
+                return;
             }
-            else
-            {
-                cboPotions.DataSource = healingPotions;
-                cboPotions.DisplayMember = "Name";
-                cboPotions.ValueMember = "ID";
 
-                cboPotions.SelectedIndex = 0;
+            if (!_player.HasItem(World.ItemByID(World.ITEM_ID_ADVENTURER_PASS)))
+            {
+                lblGoal.Text = "Цель: помогите фермеру и получите пропуск охраны.";
+                return;
             }
+
+            lblGoal.Text = "Цель: пройдите за мост и найдите след Анны.";
+        }
+
+        private void UpdateNavigationButtons(Location location)
+        {
+            btnNorth.Visible = location.LocationToNorth != null;
+            btnEast.Visible = location.LocationToEast != null;
+            btnSouth.Visible = location.LocationToSouth != null;
+            btnWest.Visible = location.LocationToWest != null;
+        }
+
+        private void UpdateLocationText(Location location)
+        {
+            rtbLocation.Text = location.Name + Environment.NewLine + Environment.NewLine + location.Description;
+        }
+
+        private void UpdateLocationImage(string imageName)
+        {
+            Image nextImage = ImageAssets.LoadImage(imageName);
+
+            if (nextImage == null)
+            {
+                nextImage = ImageAssets.LoadImage("pichome.jpg");
+            }
+
+            Image previousImage = picloc.Image;
+            picloc.Image = nextImage;
+            previousImage?.Dispose();
+        }
+
+        private void AppendQuestRequirements(Quest quest)
+        {
+            foreach (QuestCompletionItem item in quest.QuestCompletionItems)
+            {
+                AppendMessage("Нужно: " + item.Quantity + " x " + item.Details.Name + ".");
+            }
+        }
+
+        private void AppendQuestProgress(Quest quest)
+        {
+            foreach (QuestCompletionItem item in quest.QuestCompletionItems)
+            {
+                InventoryItem inventoryItem = _player.Inventory.SingleOrDefault(ii => ii.Details.ID == item.Details.ID);
+                int currentQuantity = inventoryItem == null ? 0 : inventoryItem.Quantity;
+                AppendMessage(item.Details.Name + ": " + currentQuantity + " / " + item.Quantity + ".");
+            }
+        }
+
+        private void AppendMessage(string message)
+        {
+            rtbMessages.AppendText(message + Environment.NewLine);
         }
 
         private void cboWeapons_SelectedIndexChanged(object sender, EventArgs e)
@@ -468,20 +541,9 @@ namespace NeverEnd
             rtbMessages.ScrollToCaret();
         }
 
-        private void picloc_Click(object sender, EventArgs e)
+        private void NeverEnd_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //switch (_player.CurrentLocation)
-            //{
-            //    case :
-            //        pictureBox1.Image = ;
-            //        break;
-            //    case 2:
-            //        pictureBox1.Image = ;
-            //        break;
-            //    case 3:
-            //        pictureBox1.Image = ;
-            //        break;
-            //}
+            SavePlayer();
         }
     }
 }
