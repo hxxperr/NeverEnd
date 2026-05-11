@@ -29,7 +29,6 @@ namespace NeverEnd
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(NeverEnd));
             this.dgvQuests = new System.Windows.Forms.DataGridView();
             this.dgvInventory = new System.Windows.Forms.DataGridView();
             this.rtbMessages = new System.Windows.Forms.RichTextBox();
@@ -75,15 +74,14 @@ namespace NeverEnd
             this.dgvQuests.AllowUserToResizeRows = false;
             this.dgvQuests.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvQuests.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvQuests.Location = new System.Drawing.Point(10, 399);
-            this.dgvQuests.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvQuests.Location = new System.Drawing.Point(15, 614);
             this.dgvQuests.MultiSelect = false;
             this.dgvQuests.Name = "dgvQuests";
             this.dgvQuests.ReadOnly = true;
             this.dgvQuests.RowHeadersVisible = false;
             this.dgvQuests.RowHeadersWidth = 51;
             this.dgvQuests.RowTemplate.Height = 24;
-            this.dgvQuests.Size = new System.Drawing.Size(234, 154);
+            this.dgvQuests.Size = new System.Drawing.Size(351, 237);
             this.dgvQuests.TabIndex = 50;
             // 
             // dgvInventory
@@ -94,45 +92,41 @@ namespace NeverEnd
             this.dgvInventory.AllowUserToResizeRows = false;
             this.dgvInventory.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvInventory.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
-            this.dgvInventory.Location = new System.Drawing.Point(10, 175);
-            this.dgvInventory.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.dgvInventory.Location = new System.Drawing.Point(15, 269);
             this.dgvInventory.MultiSelect = false;
             this.dgvInventory.Name = "dgvInventory";
             this.dgvInventory.ReadOnly = true;
             this.dgvInventory.RowHeadersVisible = false;
             this.dgvInventory.RowHeadersWidth = 51;
             this.dgvInventory.RowTemplate.Height = 24;
-            this.dgvInventory.Size = new System.Drawing.Size(234, 219);
+            this.dgvInventory.Size = new System.Drawing.Size(351, 337);
             this.dgvInventory.TabIndex = 49;
             // 
             // rtbMessages
             // 
-            this.rtbMessages.Location = new System.Drawing.Point(807, 147);
-            this.rtbMessages.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rtbMessages.Location = new System.Drawing.Point(1210, 226);
             this.rtbMessages.Name = "rtbMessages";
             this.rtbMessages.ReadOnly = true;
-            this.rtbMessages.Size = new System.Drawing.Size(340, 201);
+            this.rtbMessages.Size = new System.Drawing.Size(508, 307);
             this.rtbMessages.TabIndex = 48;
             this.rtbMessages.Text = "";
             this.rtbMessages.TextChanged += new System.EventHandler(this.rtbMessages_TextChanged);
             // 
             // rtbLocation
             // 
-            this.rtbLocation.Location = new System.Drawing.Point(807, 24);
-            this.rtbLocation.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.rtbLocation.Location = new System.Drawing.Point(1210, 37);
             this.rtbLocation.Name = "rtbLocation";
             this.rtbLocation.ReadOnly = true;
-            this.rtbLocation.Size = new System.Drawing.Size(340, 86);
+            this.rtbLocation.Size = new System.Drawing.Size(508, 130);
             this.rtbLocation.TabIndex = 47;
             this.rtbLocation.Text = "";
             // 
             // btnWest
             // 
             this.btnWest.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnWest.Location = new System.Drawing.Point(908, 384);
-            this.btnWest.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnWest.Location = new System.Drawing.Point(1362, 591);
             this.btnWest.Name = "btnWest";
-            this.btnWest.Size = new System.Drawing.Size(56, 19);
+            this.btnWest.Size = new System.Drawing.Size(84, 29);
             this.btnWest.TabIndex = 46;
             this.btnWest.Text = "Запад";
             this.btnWest.UseVisualStyleBackColor = true;
@@ -141,10 +135,9 @@ namespace NeverEnd
             // btnSouth
             // 
             this.btnSouth.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnSouth.Location = new System.Drawing.Point(968, 409);
-            this.btnSouth.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnSouth.Location = new System.Drawing.Point(1452, 629);
             this.btnSouth.Name = "btnSouth";
-            this.btnSouth.Size = new System.Drawing.Size(56, 19);
+            this.btnSouth.Size = new System.Drawing.Size(84, 29);
             this.btnSouth.TabIndex = 45;
             this.btnSouth.Text = "Юг";
             this.btnSouth.UseVisualStyleBackColor = true;
@@ -153,10 +146,9 @@ namespace NeverEnd
             // btnEast
             // 
             this.btnEast.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnEast.Location = new System.Drawing.Point(1028, 384);
-            this.btnEast.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnEast.Location = new System.Drawing.Point(1542, 591);
             this.btnEast.Name = "btnEast";
-            this.btnEast.Size = new System.Drawing.Size(56, 19);
+            this.btnEast.Size = new System.Drawing.Size(84, 29);
             this.btnEast.TabIndex = 44;
             this.btnEast.Text = "Восток";
             this.btnEast.UseVisualStyleBackColor = true;
@@ -165,10 +157,9 @@ namespace NeverEnd
             // btnNorth
             // 
             this.btnNorth.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnNorth.Location = new System.Drawing.Point(968, 365);
-            this.btnNorth.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnNorth.Location = new System.Drawing.Point(1452, 562);
             this.btnNorth.Name = "btnNorth";
-            this.btnNorth.Size = new System.Drawing.Size(56, 19);
+            this.btnNorth.Size = new System.Drawing.Size(84, 29);
             this.btnNorth.TabIndex = 43;
             this.btnNorth.Text = "Север";
             this.btnNorth.UseVisualStyleBackColor = true;
@@ -177,10 +168,9 @@ namespace NeverEnd
             // btnUsePotion
             // 
             this.btnUsePotion.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnUsePotion.Location = new System.Drawing.Point(1042, 524);
-            this.btnUsePotion.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnUsePotion.Location = new System.Drawing.Point(1563, 806);
             this.btnUsePotion.Name = "btnUsePotion";
-            this.btnUsePotion.Size = new System.Drawing.Size(102, 19);
+            this.btnUsePotion.Size = new System.Drawing.Size(153, 29);
             this.btnUsePotion.TabIndex = 42;
             this.btnUsePotion.Text = "Использовать";
             this.btnUsePotion.UseVisualStyleBackColor = true;
@@ -189,10 +179,9 @@ namespace NeverEnd
             // btnUseWeapon
             // 
             this.btnUseWeapon.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnUseWeapon.Location = new System.Drawing.Point(1042, 497);
-            this.btnUseWeapon.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.btnUseWeapon.Location = new System.Drawing.Point(1563, 765);
             this.btnUseWeapon.Name = "btnUseWeapon";
-            this.btnUseWeapon.Size = new System.Drawing.Size(102, 19);
+            this.btnUseWeapon.Size = new System.Drawing.Size(153, 29);
             this.btnUseWeapon.TabIndex = 41;
             this.btnUseWeapon.Text = "Использовать";
             this.btnUseWeapon.UseVisualStyleBackColor = true;
@@ -201,30 +190,27 @@ namespace NeverEnd
             // cboPotions
             // 
             this.cboPotions.FormattingEnabled = true;
-            this.cboPotions.Location = new System.Drawing.Point(850, 522);
-            this.cboPotions.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cboPotions.Location = new System.Drawing.Point(1275, 803);
             this.cboPotions.Name = "cboPotions";
-            this.cboPotions.Size = new System.Drawing.Size(92, 21);
+            this.cboPotions.Size = new System.Drawing.Size(136, 28);
             this.cboPotions.TabIndex = 40;
             this.cboPotions.SelectedIndexChanged += new System.EventHandler(this.cboPotions_SelectedIndexChanged);
             // 
             // cboWeapons
             // 
             this.cboWeapons.FormattingEnabled = true;
-            this.cboWeapons.Location = new System.Drawing.Point(850, 495);
-            this.cboWeapons.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.cboWeapons.Location = new System.Drawing.Point(1275, 762);
             this.cboWeapons.Name = "cboWeapons";
-            this.cboWeapons.Size = new System.Drawing.Size(92, 21);
+            this.cboWeapons.Size = new System.Drawing.Size(136, 28);
             this.cboWeapons.TabIndex = 39;
             this.cboWeapons.SelectedIndexChanged += new System.EventHandler(this.cboWeapons_SelectedIndexChanged);
             // 
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(1040, 474);
-            this.label5.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label5.Location = new System.Drawing.Point(1560, 729);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(107, 13);
+            this.label5.Size = new System.Drawing.Size(162, 20);
             this.label5.TabIndex = 38;
             this.label5.Text = "Выберете действие";
             // 
@@ -232,50 +218,45 @@ namespace NeverEnd
             // 
             this.lblLevel.AutoSize = true;
             this.lblLevel.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblLevel.Location = new System.Drawing.Point(161, 97);
-            this.lblLevel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblLevel.Location = new System.Drawing.Point(242, 149);
             this.lblLevel.Name = "lblLevel";
-            this.lblLevel.Size = new System.Drawing.Size(0, 25);
+            this.lblLevel.Size = new System.Drawing.Size(0, 29);
             this.lblLevel.TabIndex = 37;
             // 
             // lblExperience
             // 
             this.lblExperience.AutoSize = true;
             this.lblExperience.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblExperience.Location = new System.Drawing.Point(161, 68);
-            this.lblExperience.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblExperience.Location = new System.Drawing.Point(242, 105);
             this.lblExperience.Name = "lblExperience";
-            this.lblExperience.Size = new System.Drawing.Size(0, 25);
+            this.lblExperience.Size = new System.Drawing.Size(0, 29);
             this.lblExperience.TabIndex = 36;
             // 
             // lblGold
             // 
             this.lblGold.AutoSize = true;
             this.lblGold.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblGold.Location = new System.Drawing.Point(161, 39);
-            this.lblGold.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblGold.Location = new System.Drawing.Point(242, 60);
             this.lblGold.Name = "lblGold";
-            this.lblGold.Size = new System.Drawing.Size(0, 25);
+            this.lblGold.Size = new System.Drawing.Size(0, 29);
             this.lblGold.TabIndex = 35;
             // 
             // lblHitPoints
             // 
             this.lblHitPoints.AutoSize = true;
             this.lblHitPoints.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.lblHitPoints.Location = new System.Drawing.Point(161, 8);
-            this.lblHitPoints.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblHitPoints.Location = new System.Drawing.Point(242, 12);
             this.lblHitPoints.Name = "lblHitPoints";
-            this.lblHitPoints.Size = new System.Drawing.Size(0, 25);
+            this.lblHitPoints.Size = new System.Drawing.Size(0, 29);
             this.lblHitPoints.TabIndex = 34;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label4.Location = new System.Drawing.Point(9, 93);
-            this.label4.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label4.Location = new System.Drawing.Point(14, 143);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(94, 25);
+            this.label4.Size = new System.Drawing.Size(118, 29);
             this.label4.TabIndex = 33;
             this.label4.Text = "Уровень:";
             // 
@@ -283,10 +264,9 @@ namespace NeverEnd
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label3.Location = new System.Drawing.Point(9, 65);
-            this.label3.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label3.Location = new System.Drawing.Point(14, 100);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(70, 25);
+            this.label3.Size = new System.Drawing.Size(82, 29);
             this.label3.TabIndex = 32;
             this.label3.Text = "Опыт:";
             // 
@@ -294,10 +274,9 @@ namespace NeverEnd
             // 
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label2.Location = new System.Drawing.Point(9, 39);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label2.Location = new System.Drawing.Point(14, 60);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(88, 25);
+            this.label2.Size = new System.Drawing.Size(103, 29);
             this.label2.TabIndex = 31;
             this.label2.Text = "Золото:";
             // 
@@ -305,10 +284,9 @@ namespace NeverEnd
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label1.Location = new System.Drawing.Point(9, 7);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Location = new System.Drawing.Point(14, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(107, 25);
+            this.label1.Size = new System.Drawing.Size(133, 29);
             this.label1.TabIndex = 30;
             this.label1.Text = "Здоровье:";
             // 
@@ -316,10 +294,9 @@ namespace NeverEnd
             // 
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label6.Location = new System.Drawing.Point(9, 147);
-            this.label6.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label6.Location = new System.Drawing.Point(14, 226);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(122, 26);
+            this.label6.Size = new System.Drawing.Size(149, 31);
             this.label6.TabIndex = 51;
             this.label6.Text = "Инвентарь";
             // 
@@ -327,21 +304,19 @@ namespace NeverEnd
             // 
             this.label7.AutoSize = true;
             this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.label7.Location = new System.Drawing.Point(803, 121);
-            this.label7.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label7.Location = new System.Drawing.Point(1204, 186);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(95, 25);
+            this.label7.Size = new System.Drawing.Size(116, 29);
             this.label7.TabIndex = 57;
             this.label7.Text = "События";
             // 
             // picloc
             // 
             this.picloc.Enabled = false;
-            this.picloc.Image = global::NeverEnd.Properties.Resources.pichome;
-            this.picloc.Location = new System.Drawing.Point(248, 8);
-            this.picloc.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.picloc.Image = global::NeverEnd.ImageAssets.LoadImage("pichome.jpg");
+            this.picloc.Location = new System.Drawing.Point(372, 12);
             this.picloc.Name = "picloc";
-            this.picloc.Size = new System.Drawing.Size(555, 544);
+            this.picloc.Size = new System.Drawing.Size(832, 837);
             this.picloc.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.picloc.TabIndex = 56;
             this.picloc.TabStop = false;
@@ -349,11 +324,10 @@ namespace NeverEnd
             // 
             // pictureBox4
             // 
-            this.pictureBox4.Image = global::NeverEnd.Properties.Resources.lvl;
-            this.pictureBox4.Location = new System.Drawing.Point(116, 92);
-            this.pictureBox4.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox4.Image = global::NeverEnd.ImageAssets.LoadImage("lvl.png");
+            this.pictureBox4.Location = new System.Drawing.Point(174, 142);
             this.pictureBox4.Name = "pictureBox4";
-            this.pictureBox4.Size = new System.Drawing.Size(26, 28);
+            this.pictureBox4.Size = new System.Drawing.Size(39, 43);
             this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox4.TabIndex = 55;
             this.pictureBox4.TabStop = false;
@@ -361,11 +335,10 @@ namespace NeverEnd
             // 
             // pictureBox3
             // 
-            this.pictureBox3.Image = global::NeverEnd.Properties.Resources.exp;
-            this.pictureBox3.Location = new System.Drawing.Point(116, 67);
-            this.pictureBox3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox3.Image = global::NeverEnd.ImageAssets.LoadImage("exp.png");
+            this.pictureBox3.Location = new System.Drawing.Point(174, 103);
             this.pictureBox3.Name = "pictureBox3";
-            this.pictureBox3.Size = new System.Drawing.Size(26, 28);
+            this.pictureBox3.Size = new System.Drawing.Size(39, 43);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox3.TabIndex = 54;
             this.pictureBox3.TabStop = false;
@@ -373,11 +346,10 @@ namespace NeverEnd
             // 
             // pictureBox2
             // 
-            this.pictureBox2.Image = global::NeverEnd.Properties.Resources.gold;
-            this.pictureBox2.Location = new System.Drawing.Point(116, 35);
-            this.pictureBox2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox2.Image = global::NeverEnd.ImageAssets.LoadImage("gold.png");
+            this.pictureBox2.Location = new System.Drawing.Point(174, 54);
             this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(26, 28);
+            this.pictureBox2.Size = new System.Drawing.Size(39, 43);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox2.TabIndex = 53;
             this.pictureBox2.TabStop = false;
@@ -385,11 +357,10 @@ namespace NeverEnd
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Image = global::NeverEnd.Properties.Resources.heart;
-            this.pictureBox1.Location = new System.Drawing.Point(116, 7);
-            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.pictureBox1.Image = global::NeverEnd.ImageAssets.LoadImage("heart.png");
+            this.pictureBox1.Location = new System.Drawing.Point(174, 11);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(26, 28);
+            this.pictureBox1.Size = new System.Drawing.Size(39, 43);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
             this.pictureBox1.TabIndex = 52;
             this.pictureBox1.TabStop = false;
@@ -397,9 +368,9 @@ namespace NeverEnd
             // 
             // NeverEnd
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1158, 561);
+            this.ClientSize = new System.Drawing.Size(1737, 863);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.picloc);
             this.Controls.Add(this.pictureBox4);
@@ -430,8 +401,6 @@ namespace NeverEnd
             this.Controls.Add(this.label1);
             this.Cursor = System.Windows.Forms.Cursors.Arrow;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.Name = "NeverEnd";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Never End";
