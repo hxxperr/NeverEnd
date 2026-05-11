@@ -33,6 +33,7 @@ namespace Engine
         {
             Player player = new Player(10, 10, 20, 0);
             player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_RUSTY_SWORD), 1));
+            player.Inventory.Add(new InventoryItem(World.ItemByID(World.ITEM_ID_HEALING_POTION), 1));
             player.CurrentLocation = World.LocationByID(World.LOCATION_ID_HOME);
 
             return player;
@@ -102,7 +103,7 @@ namespace Engine
             }
 
             // Смотрит, есть ли у игрока необходимый предмет в инвентаре
-            return Inventory.Exists(ii => ii.Details.ID == location.ItemRequiredToEnter.ID);
+            return Inventory.Exists(ii => ii.Details.ID == location.ItemRequiredToEnter.ID && ii.Quantity > 0);
         }
 
         public bool HasThisQuest(Quest quest)
@@ -142,18 +143,17 @@ namespace Engine
         {
             foreach (QuestCompletionItem qci in quest.QuestCompletionItems)
             {
-                InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == qci.Details.ID);
-
-                if (item != null)
-                {
-                    // Subtract the quantity from the player's inventory that was needed to complete the quest
-                    item.Quantity -= qci.Quantity;
-                }
+                RemoveItemFromInventory(qci.Details, qci.Quantity);
             }
         }
 
         public void AddItemToInventory(Item itemToAdd)
         {
+            if (itemToAdd == null)
+            {
+                return;
+            }
+
             InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToAdd.ID);
 
             if (item == null)
@@ -166,6 +166,26 @@ namespace Engine
                 // They have the item in their inventory, so increase the quantity by one
                 item.Quantity++;
             }
+        }
+
+        public void RemoveItemFromInventory(Item itemToRemove, int quantity = 1)
+        {
+            if (itemToRemove == null || quantity <= 0)
+            {
+                return;
+            }
+
+            InventoryItem item = Inventory.SingleOrDefault(ii => ii.Details.ID == itemToRemove.ID);
+
+            if (item != null)
+            {
+                item.Quantity = Math.Max(0, item.Quantity - quantity);
+            }
+        }
+
+        public bool HasItem(Item item, int quantity = 1)
+        {
+            return item != null && Inventory.Exists(ii => ii.Details.ID == item.ID && ii.Quantity >= quantity);
         }
 
         public void MarkQuestCompleted(Quest quest)

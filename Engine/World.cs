@@ -1,8 +1,4 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Engine
 {
@@ -12,7 +8,7 @@ namespace Engine
         public static readonly List<Monster> Monsters = new List<Monster>();
         public static readonly List<Quest> Quests = new List<Quest>();
         public static readonly List<Location> Locations = new List<Location>();
-        public static readonly List<Character> Сharacters = new List<Character>();
+        public static readonly List<Character> Characters = new List<Character>();
 
         public const int ITEM_ID_RUSTY_SWORD = 1;
         public const int ITEM_ID_RAT_TAIL = 2;
@@ -66,144 +62,132 @@ namespace Engine
 
         private static void PopulateItems()
         {
-            // Создаем вещи и указываем их хар-ки
-            Items.Add(new Weapon(ITEM_ID_RUSTY_SWORD, "Ржавый меч", "Ржавые мечи", 0, 5));
+            Items.Add(new Weapon(ITEM_ID_RUSTY_SWORD, "Ржавый меч", "Ржавые мечи", 1, 5));
             Items.Add(new Item(ITEM_ID_RAT_TAIL, "Крысиный хвост", "Крысиные хвосты"));
-            Items.Add(new Item(ITEM_ID_PIECE_OF_FUR, "Кусок меха", "Кусочки меха"));
+            Items.Add(new Item(ITEM_ID_PIECE_OF_FUR, "Кусок меха", "Куски меха"));
             Items.Add(new Item(ITEM_ID_SNAKE_FANG, "Змеиный клык", "Змеиные клыки"));
             Items.Add(new Item(ITEM_ID_SNAKESKIN, "Змеиная кожа", "Змеиные кожи"));
-            Items.Add(new Weapon(ITEM_ID_CLUB, "Дубина", "Дибины", 3, 10));
-            Items.Add(new HealingPotion(ITEM_ID_HEALING_POTION, "Лечебное зелье", "Лечебные зелья", 5));
-            Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Паучий клык", "Паучие клыки"));
-            Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Паучий шелк", "Паучье шелка"));
-            Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Пропуск", "Пропуска"));
+            Items.Add(new Weapon(ITEM_ID_CLUB, "Дубина", "Дубины", 3, 10));
+            Items.Add(new HealingPotion(ITEM_ID_HEALING_POTION, "Лечебное зелье", "Лечебные зелья", 6));
+            Items.Add(new Item(ITEM_ID_SPIDER_FANG, "Паучий клык", "Паучьи клыки"));
+            Items.Add(new Item(ITEM_ID_SPIDER_SILK, "Паучий шелк", "Паучьи шелка"));
+            Items.Add(new Item(ITEM_ID_ADVENTURER_PASS, "Пропуск охраны", "Пропуска охраны"));
             Items.Add(new Item(ITEM_ID_TOAD_FOOT, "Жабья лапка", "Жабьи лапки"));
             Items.Add(new Item(ITEM_ID_TOAD_TONGUE, "Жабий язык", "Жабьи языки"));
-            Items.Add(new Item(ITEM_ID_TOAD_TONGUE, "Жабий язык", "Жабьи языки"));
-            Items.Add(new Weapon(ITEM_ID_BOW, "Лук", "Луки",0,15));
+            Items.Add(new Item(ITEM_ID_GOLD_RING, "Золотое кольцо Анны", "Золотые кольца Анны"));
+            Items.Add(new Weapon(ITEM_ID_BOW, "Охотничий лук", "Охотничьи луки", 5, 14));
         }
-        public static void PopulateCharacters()
-        {
-            Character wife = new Character(CHARACTER_ID_WIFE, "Анна", "Жена", "Ваша любимая жена, которая всегда вас встречала с работы со вкусным ужином.", 5, 5);
-            Character boozer = new Character(CHARACTER_ID_BOOZER, "Пьяница", "Житель города", "Вы часто его видите по вечерам около местной таверны, выглядит не опрятно.", 100, 100);
-            Character dog = new Character(CHARACTER_ID_DOG, "Арбуз", "Животное", "Ваша любимая собака. У нее морда чем-то похожа на арбуз.", 3, 3);
 
-            Сharacters.Add(wife);
-            Сharacters.Add(boozer);
-            Сharacters.Add(dog);
+        private static void PopulateCharacters()
+        {
+            Characters.Add(new Character(CHARACTER_ID_WIFE, "Анна", "Жена", "Ваша любимая жена пропала ночью. Во дворе остались огромные следы.", 5, 5));
+            Characters.Add(new Character(CHARACTER_ID_BOOZER, "Пьяница", "Житель города", "Он видел, как что-то большое ушло за мост.", 100, 100));
+            Characters.Add(new Character(CHARACTER_ID_DOG, "Арбуз", "Пес", "Ваш пес нервно смотрит на север и не отходит от следов.", 3, 3));
         }
 
         private static void PopulateMonsters()
         {
-            //Создаем монстров
-            Monster rat = new Monster(MONSTER_ID_RAT, "Крыса", 5, 3, 10, 3, 3);
+            Monster rat = new Monster(MONSTER_ID_RAT, "Крыса", 4, 4, 6, 4, 4);
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_RAT_TAIL), 75, false));
             rat.LootTable.Add(new LootItem(ItemByID(ITEM_ID_PIECE_OF_FUR), 75, true));
 
-            Monster snake = new Monster(MONSTER_ID_SNAKE, "Змея", 5, 3, 10, 3, 3);
+            Monster snake = new Monster(MONSTER_ID_SNAKE, "Змея", 6, 6, 9, 6, 6);
             snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKE_FANG), 75, false));
-            snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKESKIN), 75, true));
+            snake.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SNAKESKIN), 70, true));
 
-            Monster giantFrog = new Monster(MONSTER_ID_GIANT_TOAD, "Огромная жаба", 10, 5, 15, 15, 15);
-            giantFrog.LootTable.Add(new LootItem(ItemByID(ITEM_ID_TOAD_FOOT), 80, false));
-            giantFrog.LootTable.Add(new LootItem(ItemByID(ITEM_ID_TOAD_TONGUE), 20, false));
+            Monster giantToad = new Monster(MONSTER_ID_GIANT_TOAD, "Огромная жаба", 9, 10, 18, 14, 14);
+            giantToad.LootTable.Add(new LootItem(ItemByID(ITEM_ID_TOAD_FOOT), 80, true));
+            giantToad.LootTable.Add(new LootItem(ItemByID(ITEM_ID_TOAD_TONGUE), 30, false));
 
-
-            Monster giantSpider = new Monster(MONSTER_ID_GIANT_SPIDER, "Огромный паук", 20, 5, 40, 10, 10);
-            giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_FANG), 75, true));
-            giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_SILK), 25, false));
+            Monster giantSpider = new Monster(MONSTER_ID_GIANT_SPIDER, "Паучья матка", 13, 25, 35, 24, 24);
+            giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_FANG), 100, true));
+            giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_SPIDER_SILK), 60, false));
+            giantSpider.LootTable.Add(new LootItem(ItemByID(ITEM_ID_GOLD_RING), 100, false));
 
             Monsters.Add(rat);
             Monsters.Add(snake);
+            Monsters.Add(giantToad);
             Monsters.Add(giantSpider);
-            Monsters.Add(giantFrog);
         }
 
         private static void PopulateQuests()
         {
-            // Создаем квесты и их награды
-            Quest clearAlchemistGarden =
-                new Quest(
-                    QUEST_ID_CLEAR_ALCHEMIST_GARDEN,
-                    "Очистить сад алхимика",
-                    "Убейте крыс в саду алхимика и принесите 3 крысиных хвоста. Вы получите лечебное зелье и 10 золотых монет.", 20, 10);
+            Quest findWife = new Quest(
+                QUEST_ID_FIND_WIFE,
+                "Найти Анну",
+                "Анна пропала ночью. Следы ведут от дома к городу, а дальше за мост. Найдите ее кольцо и вернитесь во двор.",
+                50,
+                50);
+            findWife.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_GOLD_RING), 1));
+            findWife.RewardItem = ItemByID(ITEM_ID_BOW);
 
+            Quest clearAlchemistGarden = new Quest(
+                QUEST_ID_CLEAR_ALCHEMIST_GARDEN,
+                "Очистить сад алхимика",
+                "Алхимик просит прогнать крыс из сада и принести 3 крысиных хвоста.",
+                18,
+                12);
             clearAlchemistGarden.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_RAT_TAIL), 3));
-
             clearAlchemistGarden.RewardItem = ItemByID(ITEM_ID_HEALING_POTION);
 
-            clearAlchemistGarden.RewardItem = ItemByID(ITEM_ID_CLUB);
-
-            Quest clearFarmersField =
-                new Quest(
-                    QUEST_ID_CLEAR_FARMERS_FIELD,
-                    "Очистить поле фермера",
-                    "Убейте змей на поле фермера и принесите 3 змеиных клыка. Вы получите дубину, пропуск и 20 золотых монет.", 20, 20);
-
+            Quest clearFarmersField = new Quest(
+                QUEST_ID_CLEAR_FARMERS_FIELD,
+                "Очистить поле фермера",
+                "Фермер даст пропуск охраны, если вы принесете 3 змеиных клыка с поля.",
+                24,
+                18);
             clearFarmersField.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_SNAKE_FANG), 3));
-
             clearFarmersField.RewardItem = ItemByID(ITEM_ID_ADVENTURER_PASS);
 
-            Quest getGold =
-                new Quest(
-                    QUEST_ID_TOWN_SQUARE_GOLDEN_TICKET,
-                    "Золотой билет",
-                    "Получите пропуск. Вы получите дубину и 20 золотых монет.", 20, 20);
+            Quest getBow = new Quest(
+                QUEST_ID_TOWN_SQUARE_GOLDEN_TICKET,
+                "Слухи на площади",
+                "Городской пьяница обменяет охотничий лук на 2 куска меха. Говорит, за мостом без лука делать нечего.",
+                12,
+                10);
+            getBow.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_PIECE_OF_FUR), 2));
+            getBow.RewardItem = ItemByID(ITEM_ID_BOW);
 
-            getGold.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_ADVENTURER_PASS), 1));
-
-            getGold.RewardItem = ItemByID(ITEM_ID_CLUB);
-
-            Quest findWIfe =
-                new Quest(
-                    QUEST_ID_FIND_WIFE,
-                    "Найдите вашу жену.",
-                    "Ваша жена пропала сегодня ночью. Около дома видны большие следы, которые вы раньше не видели.", 50, 50);
-
-            findWIfe.QuestCompletionItems.Add(new QuestCompletionItem(ItemByID(ITEM_ID_ADVENTURER_PASS), 1));
-
-            findWIfe.RewardItem = ItemByID(ITEM_ID_GOLD_RING);
-
+            Quests.Add(findWife);
             Quests.Add(clearAlchemistGarden);
             Quests.Add(clearFarmersField);
-            Quests.Add(getGold);
-            Quests.Add(findWIfe);
+            Quests.Add(getBow);
         }
 
         private static void PopulateLocations()
         {
-            // Создаем локации
-            Location home = new Location(LOCATION_ID_HOME, "Дом", "Ваш дом.");
+            Location home = new Location(LOCATION_ID_HOME, "Дом", "Ваш дом. Здесь можно перевести дух и восстановить здоровье.", "pichome.jpg");
+            home.RestoresHitPoints = true;
 
-            Location yard = new Location(LOCATION_ID_YARD, "Двор", "Двор перед вашим домом. У вас тут растет много овощей и фруктов. Тут есть какие-то большие следы.");
+            Location yard = new Location(LOCATION_ID_YARD, "Двор", "Двор перед вашим домом. На влажной земле видны огромные следы.", "picyard.jpg");
             yard.QuestAvailableHere = QuestByID(QUEST_ID_FIND_WIFE);
 
-            Location townSquare = new Location(LOCATION_ID_TOWN_SQUARE, "Центр города", "Вы видите фонтан.");
+            Location townSquare = new Location(LOCATION_ID_TOWN_SQUARE, "Центр города", "У фонтана шумят жители. Здесь собирают слухи и обмениваются припасами.", "Pictownsquare.jpg");
             townSquare.QuestAvailableHere = QuestByID(QUEST_ID_TOWN_SQUARE_GOLDEN_TICKET);
 
-            Location alchemistHut = new Location(LOCATION_ID_ALCHEMIST_HUT, "Хижина алхимика", "На полках много странных растений.");
+            Location alchemistHut = new Location(LOCATION_ID_ALCHEMIST_HUT, "Хижина алхимика", "На полках стоят травы, склянки и мешочки с порошками.", "picalchhouse.jfif");
             alchemistHut.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_ALCHEMIST_GARDEN);
 
-            Location alchemistsGarden = new Location(LOCATION_ID_ALCHEMISTS_GARDEN, "Сад алхимика", "Здесь растет много растений.");
+            Location alchemistsGarden = new Location(LOCATION_ID_ALCHEMISTS_GARDEN, "Сад алхимика", "Грядки перерыты, а среди трав слышен писк.", "picrats.jpg");
             alchemistsGarden.MonsterLivingHere = MonsterByID(MONSTER_ID_RAT);
 
-            Location farmhouse = new Location(LOCATION_ID_FARMHOUSE, "Ферма", "Там маленькая ферма с фермером.");
+            Location farmhouse = new Location(LOCATION_ID_FARMHOUSE, "Ферма", "Фермер нервно смотрит на поле и просит помощи.", "picfarm.jpg");
             farmhouse.QuestAvailableHere = QuestByID(QUEST_ID_CLEAR_FARMERS_FIELD);
 
-            Location farmersField = new Location(LOCATION_ID_FARM_FIELD, "Поле фермера", "Вы видите, что здесь растут ряды овощей.");
+            Location farmersField = new Location(LOCATION_ID_FARM_FIELD, "Поле фермера", "В высокой траве шуршат змеи.", "picsnake.jpg");
             farmersField.MonsterLivingHere = MonsterByID(MONSTER_ID_SNAKE);
 
-            Location guardPost = new Location(LOCATION_ID_GUARD_POST, "Пост охраны", "Здесь большой, крепкий на вид охранник.", ItemByID(ITEM_ID_ADVENTURER_PASS));
+            Location guardPost = new Location(LOCATION_ID_GUARD_POST, "Пост охраны", "Стражник пропускает за город только тех, у кого есть пропуск.", "picguardpost.jpg", ItemByID(ITEM_ID_ADVENTURER_PASS));
 
-            Location bridge = new Location(LOCATION_ID_BRIDGE, "Мост", "Каменный мост через широкую реку.");
+            Location bridge = new Location(LOCATION_ID_BRIDGE, "Мост", "Каменный мост ведет к лесу. Следы становятся глубже.", "picbridge.jpg");
+            bridge.MonsterLivingHere = MonsterByID(MONSTER_ID_GIANT_TOAD);
 
-            Location spiderField = new Location(LOCATION_ID_SPIDER_FIELD, "Лес", "Вы видите паутину, покрывающую деревья в этом лесу.");
+            Location spiderField = new Location(LOCATION_ID_SPIDER_FIELD, "Темный лес", "Паутина покрывает деревья. В глубине блестит что-то золотое.", "picforest.jpg");
             spiderField.MonsterLivingHere = MonsterByID(MONSTER_ID_GIANT_SPIDER);
+            spiderField.IsFinalLocation = true;
 
-            Location shop = new Location(LOCATION_ID_SHOP, "Магазин", "Местная лавака, где можно купить различные товары.");
+            Location shop = new Location(LOCATION_ID_SHOP, "Магазин", "Местная лавка. Торговец продает зелья и точит клинки.", "picshop.jpg");
 
-
-            // Связываем локации
             home.LocationToNorth = yard;
 
             yard.LocationToNorth = townSquare;
@@ -235,7 +219,6 @@ namespace Engine
 
             spiderField.LocationToWest = bridge;
 
-            // Добавляем локации в статический список
             Locations.Add(home);
             Locations.Add(yard);
             Locations.Add(shop);
@@ -251,54 +234,22 @@ namespace Engine
 
         public static Item ItemByID(int id)
         {
-            foreach (Item item in Items)
-            {
-                if (item.ID == id)
-                {
-                    return item;
-                }
-            }
-
-            return null;
+            return Items.Find(item => item.ID == id);
         }
 
         public static Monster MonsterByID(int id)
         {
-            foreach (Monster monster in Monsters)
-            {
-                if (monster.ID == id)
-                {
-                    return monster;
-                }
-            }
-
-            return null;
+            return Monsters.Find(monster => monster.ID == id);
         }
 
         public static Quest QuestByID(int id)
         {
-            foreach (Quest quest in Quests)
-            {
-                if (quest.ID == id)
-                {
-                    return quest;
-                }
-            }
-
-            return null;
+            return Quests.Find(quest => quest.ID == id);
         }
 
         public static Location LocationByID(int id)
         {
-            foreach (Location location in Locations)
-            {
-                if (location.ID == id)
-                {
-                    return location;
-                }
-            }
-
-            return null;
+            return Locations.Find(location => location.ID == id);
         }
     }
 }
